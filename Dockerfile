@@ -1,9 +1,19 @@
-FROM python:3.8-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 # Install necessary system dependencies
 RUN apt-get update -y && \
-    apt-get install -y awscli git && \
-    apt-get clean
+    apt-get install -y --fix-missing \
+        awscli \
+        git \
+        build-essential \
+        libxml2-dev \
+        libxslt-dev \
+        zlib1g-dev \
+        libffi-dev \
+        pkg-config && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 
 # Set working directory
 WORKDIR /app
@@ -11,14 +21,28 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Install Python dependencies
+# Install Python dependencies  
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# Install packages individually to avoid hash conflicts
+RUN pip install --no-cache-dir --timeout=300 --retries=3 \
+    transformers[sentencepiece] \
+    datasets \
+    sacrebleu \
+    rouge_score \
+    py7zr \
+    pandas \
+    nltk \
+    tqdm \
+    PyYAML \
+    matplotlib \
+    torch \
+    beartype \
+    python-box
+RUN pip install --no-cache-dir -e .
 
-# Optional: expose port if using FastAPI or Flask
+# Expose port for using FastAPI 
 EXPOSE 8080
 
 # Start the app
-CMD ["python3", "app.py"]
-
+CMD ["python3", "src/app.py"]
 

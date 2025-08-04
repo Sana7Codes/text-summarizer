@@ -1,6 +1,4 @@
-#In order to publish the package, you need to run the following command:
 import setuptools
-
 
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
@@ -11,7 +9,6 @@ REPO_NAME = "text-summarizer"
 AUTHOR_USER_NAME = "sana7codes"
 SRC_REPO = "textSummarizer"
 AUTHOR_EMAIL = "haidarsana1@gmail.com"
-
 
 setuptools.setup(
     name=SRC_REPO,
@@ -25,7 +22,24 @@ setuptools.setup(
     project_urls={
         "Bug Tracker": f"https://github.com/{AUTHOR_USER_NAME}/{REPO_NAME}/issues"
     },
-    package_dir= {"": "src"},
+    package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
-     
+    install_requires=[
+        "numpy",
+        "pandas",
+        "scikit-learn",
+        "transformers",
+        "torch",
+        "tqdm",
+        "Flask",
+        "uvicorn",
+        "fastapi",
+        "PyYAML"
+    ],
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    python_requires=">=3.7",
 )
