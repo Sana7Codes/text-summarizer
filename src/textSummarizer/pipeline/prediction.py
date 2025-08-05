@@ -1,4 +1,4 @@
-from transformers import pipeline, AutoTokenizer
+from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 from textSummarizer.config.configuration import ConfigurationManager
 
  
@@ -11,9 +11,12 @@ class PredictionPipeline:
 
     def predict(self, text):      
          tokenizer = AutoTokenizer.from_pretrained(self.config.tokenizer_path, local_files_only=True)
+
+         model = AutoModelForSeq2SeqLM.from_pretrained(self.config.model_path, local_files_only=True)
+
          gen_kwargs = {"length_penalty": 0.8, "num_beams": 8 , "max_length": 128}
 
-         pipe = pipeline("summarization", model = self.config.model_path, tokenizer= tokenizer)
+         pipe = pipeline("summarization", model = model, tokenizer= tokenizer)
 
          print("Dialogue:")
          print(text)
